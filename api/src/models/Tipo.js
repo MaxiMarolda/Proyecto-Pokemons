@@ -4,12 +4,10 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('tipo', {
-    id: {
-      type: DataTypes.FLOAT,
-      primaryKey: true,
-    },
     nombre: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     }
   });
 };
