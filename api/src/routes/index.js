@@ -9,9 +9,13 @@ const {Pokemon ,Tipo} = require('../db');
 const router = Router();
 let cache = [];
 
+var offset = 0;
+var limit = 5;
+
 const getPokemons = async () =>{
-  const pokeCount = 10;
-  const apiUrl = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${pokeCount}`);
+  console.log(`pedido a la api desde ${offset} cantidad ${limit}`);
+  const apiUrl = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
+  //console.log(apiUrl.data);
   const apiInfo = await Promise.all(apiUrl.data.results.map(e => axios.get(e.url)));
   const apiInfoFinal = apiInfo.map(el => {
     return {
@@ -27,7 +31,6 @@ const getPokemons = async () =>{
       peso: el.data.weight,
     };
   });
-  //console.log(apiInfoFinal);
   return apiInfoFinal;
 };
 
@@ -44,24 +47,38 @@ const getDbInfo = async () => {
   });
 };
 
+
 const getAllPokemons = async () => {
- // console.log(`De la cache ${cache}`);
-  if(cache.length) return cache;
-  const apiInfo = await getPokemons();
-  //console.log("consulto la webApi");
+  let apiInfo2 = [];
+  let apiInfo3 = [];
+  if(cache.length > 39){
+   console.log(`De la cache ${cache}`);
+    apiInfo2 = cache;
+  } else {
+    console.log("consulto la webApi");
+    do {
+      apiInfo3 = (await getPokemons());
+      apiInfo2 = apiInfo2.concat(apiInfo3);
+      offset += limit;
+      console.log(`ApiInfo 2 ${apiInfo2}`);
+    } while (offset < 39);
+  }
   const dbInfo = await getDbInfo();
-  const infoTotal = apiInfo.concat(dbInfo);
+  console.log("consulto la DB");
+  const infoTotal = apiInfo2.concat(dbInfo);
   infoTotal.map (el => cache.push(el));
-  //console.log(`De la web ${cache}`);
+  console.log(`Desde la web ${cache}`);
   return infoTotal;
 };
 
 
+
 router.get ('/pokemons', async (req, res) => {
-  let pokemonsTotal = await getAllPokemons();
   const { name } = req.query;
- // console.log(`Console de nombre: ${name}`);
+  //console.log(`Console de nombre: ${name}`);
   if (!name) {
+    console.log("entre al if");
+    let pokemonsTotal = await getAllPokemons();
     try {
     return res.send(pokemonsTotal)
   } catch (error) {
@@ -69,7 +86,7 @@ router.get ('/pokemons', async (req, res) => {
   }
   } else {
     try {
-      let pokemonName = await pokemonsTotal.filter( e => e.nombre.toLowerCase() === name.toLowerCase());
+      let pokemonName = await cache.filter( e => e.nombre.toLowerCase() === name.toLowerCase());
       return pokemonName.length ?
             res.json(pokemonName) :
             res.status(404).send('No existe ese personaje')    

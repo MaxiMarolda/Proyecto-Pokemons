@@ -1,4 +1,9 @@
 body {
+  /* background: url('https://res.cloudinary.com/practicaldev/image/fetch/s--zC7Z0vVI--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/ddpwmdu4jyrrtebxvf46.jpg'); */
+  background: url('https://miro.medium.com/max/1400/1*TpUWt7RpXjl2jHAWNZjf0A.jpeg');
+  background-attachment: fixed;
+  background-size: cover;
+  
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
