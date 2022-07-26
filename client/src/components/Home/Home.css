@@ -1,4 +1,23 @@
 .Pokemons {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
+.Selects {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center
+}
+.NoPokemonsToShow {
+  background-color: rgba(0, 89, 255, 0.401);
+}
+/* .Paginado ol {
+  list-style-type: none;
+
+}
+.Number {
+    display: inline-block;
+    color: #000;
+} */

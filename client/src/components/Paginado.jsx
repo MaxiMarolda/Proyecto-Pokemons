@@ -2,19 +2,19 @@ import React from "react";
 
 const Paginado = ({pokemonsPerPage, allPokemons, paginado}) =>{
  const pageNumbers = [];
+ const pageTotal = Math.ceil(allPokemons/pokemonsPerPage);
 
- for (let i = 0; i <= Math.ceil(allPokemons/pokemonsPerPage); i++) {
-  pageNumbers.push(i+1);
+ for (let i = 1; i <= pageTotal; i++) {
+  pageNumbers.push(i);
  }
  return(
-    <nav>
-      <ul className="Paginado">
+   <nav className="Paginado">
+      {console.log(`total de páginas ${pageTotal}`)}
         { pageNumbers && pageNumbers.map(n => (
-          <li className="Number" key={n}>
-            <a onClick={() => paginado(n)}>{n}</a>
-          </li>
+          <span className="Number" key={n}>
+            <button onClick={() => paginado(n)}>{n}</button>
+          </span>
         ))}
-      </ul>
     </nav>
  )
 }
