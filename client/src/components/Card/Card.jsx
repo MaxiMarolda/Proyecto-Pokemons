@@ -1,14 +1,23 @@
 import React from "react";
 import './Card.css'
 
-export default function Card({name, img, types}) {
+export default function Card({name, hp, img, type}) {
   return (
     <div className="PokeCard">
-      {console.log("Entre")
+      {//console.log(type.length)}
+      //{console.log(type[0])
       }
-      <h3>{name.toUpperCase()}</h3>
-      <h5>{types}</h5>
-      <img src={img} alt="no se eoncontró la imagen" width="200px" height="250" />
+      <h4>{name.toUpperCase()}</h4>
+      <h5>Types: {type.length === 0
+                  ? ("No type available")
+                  :type.length === 1 
+                    ? type[0]
+                    :type.length === 2 
+                      ? (type[0] + " - " + type[1])
+                      : (type[0] + " - " + type[1] + " - " + type[2]) }
+      </h5>
+      <h5>Attack: {hp}</h5>
+      <img src={img} alt="no se encontró la imagen" />
     </div>
   )
 }

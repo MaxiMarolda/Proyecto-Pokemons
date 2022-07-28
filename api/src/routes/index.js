@@ -3,7 +3,7 @@ const { Router } = require('express');
 // Ejemplo: const authRouter = require('./auth.js');
 const axios = require("axios");
 //const Tipo = require('../models/Tipo');
-const {Pokemon ,Types} = require('../db');
+const {Pokemon ,Type} = require('../db');
 
 
 
@@ -11,7 +11,7 @@ const router = Router();
 let cache = [];
 
 var offset = 0;
-var limit = 5;
+var limit = 10;
 
 const getPokemons = async () =>{
   console.log(`pedido a la api desde ${offset} cantidad ${limit}`);
@@ -22,7 +22,7 @@ const getPokemons = async () =>{
     return {
       id: el.data.id,
       name: el.data.name,
-      types: el.data.types.map(t => t.type.name),
+      type: el.data.types.map(t => t.type.name),
       img: el.data.sprites.other.home.front_default,
       hp: el.data.stats[0].base_stat,
       strength: el.data.stats[1].base_stat,
@@ -30,22 +30,32 @@ const getPokemons = async () =>{
       speed: el.data.stats[5].base_stat,
       height: el.data.height,
       weight: el.data.weight,
+      created: false,
     };
   });
   return apiInfoFinal;
 };
 
 const getDbInfo = async () => {
-  return await Pokemon.findAll({
+  try {
+    let r =  await Pokemon.findAll({
     include: {
-      model: Types,
-      attributes: ['name'],
+      model: Type,
+      attributes: ["name"],
       through: {
-        attributes: [],
-      }
+        attributes: []
+      },
     },
-    attributes: ["id","name","img","hp","strength","defense","speed","height","weight"]
   });
+  r = r.map((e) => ({...e.dataValues, type: e.types.map((e) => e.name)}))
+  for (let i = 0; i < r.length; i++) {
+    delete r[i].types;
+  }
+  console.log(r);
+  return r;
+  } catch (e) {
+    console.log(e)
+  } 
 };
 
 
@@ -58,37 +68,37 @@ const getAllPokemons = async () => {
     return cache; 
   } else {
     console.log("consulto la webApi");
-    do {
+    while (offset < 39){
       apiInfo3 = (await getPokemons());
       apiInfo2 = apiInfo2.concat(apiInfo3);
       offset += limit;
       console.log(`ApiInfo 2 ${apiInfo2}`);
-    } while (offset < 39);
+    };
     const dbInfo = await getDbInfo();
-    console.log("consulto la DB");
+        console.log("consulto la DB");
     const infoTotal = apiInfo2.concat(dbInfo);
     infoTotal.map (el => cache.push(el));
-    console.log(`Desde la web ${cache}`);
+        console.log(`Desde la web ${cache}`);
     return infoTotal;
   }
 };
 
-
-
 router.get ('/pokemons', async (req, res) => {
-  const { name } = req.query;
-  //console.log(`Console de nombre: ${name}`);
+  let { name } = req.query;
+  console.log(`Console de nombre: ${name}`);
   if (!name) {
     console.log("entre al if");
     try {
-      let pokemonsTotal = await getAllPokemons(); //getDbInfo();
+      let pokemonsTotal = await getAllPokemons();//getDbInfo()
       return res.send(pokemonsTotal)
     } catch (error) {
+      console.log(error)
       return res.status(400).send("Error en la consulta");
     }
   } else {
+    name = name.toLowerCase();
     try {
-      let pokemonName = await cache.filter( e => e.nombre.toLowerCase() === name.toLowerCase());
+      let pokemonName = await cache.filter( e => e.name === name);
       return pokemonName.length ?
             res.json(pokemonName) :
             res.status(404).send('No existe ese personaje')    
@@ -103,6 +113,33 @@ router.get ('/pokemons', async (req, res) => {
   
 });
 
+router.get ('/db', async (req, res) => {
+  let { name } = req.query;
+  console.log(`Console de nombre: ${name}`);
+  if (!name) {
+    console.log("entre al if");
+    try {
+      let pokemonsTotal = await getDbInfo();
+      return res.send(pokemonsTotal)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send("Error en la consulta");
+    }
+  } else {
+    name = name.toLowerCase();
+    try {
+      let pokemonName = await cache.filter( e => e.name === name);
+      return pokemonName.length ?
+            res.json(pokemonName) :
+            res.status(404).send('No existe ese personaje')    
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send("Error en la consulta");
+    }
+    
+
+  }
+});
 
 router.get ('/pokemons/:ID', async (req, res) => {
   const { ID } = req.params;
@@ -112,7 +149,7 @@ router.get ('/pokemons/:ID', async (req, res) => {
       const apiInfoFinal = {
         id: apiInfo.data.id,
         name: apiInfo.data.name,
-        types: apiInfo.data.types.map(t => t.type.name),
+        type: apiInfo.data.types.map(t => t.type.name),
         img: apiInfo.data.sprites.other.home.front_default,
         hp: apiInfo.data.stats[0].base_stat,
         strength: apiInfo.data.stats[1].base_stat,
@@ -126,13 +163,13 @@ router.get ('/pokemons/:ID', async (req, res) => {
       return await Pokemon.findOne({
         where: {id : ID},
         include: {
-          model: Types,
+          model: Type,
           attributes: ['name'],
           through: {
             attributes: [],
           }
         },
-        attributes: ["id","name","img","hp","strength","defense","speed","height","weight"]
+        attributes: ["id","name","img","hp","strength","defense","speed","height","weight","created"]
        });
     };
   } 
@@ -147,17 +184,16 @@ router.get ('/pokemons/:ID', async (req, res) => {
   }
 });
 
-
 router.get ('/types', async (req, res) => {
   try {
     const typesApi = await axios.get ('https://pokeapi.co/api/v2/type');
     const types = typesApi.data.results.map (el => el.name);
     types.forEach (type => {
-      Types.findOrCreate({
+      Type.findOrCreate({
         where: {name: type}
       });
     });
-    const allTypes = await Types.findAll();
+    const allTypes = await Type.findAll();
     res.send(allTypes);
   } catch (error) {
     res.send(error);
@@ -165,14 +201,14 @@ router.get ('/types', async (req, res) => {
 });
 
 router.post ('/pokemons', async (req, res) => {
-  const {name, hp, strength, defense, speed, height, weight, types} = req.body;
+  const {name, hp, strength, defense, speed, height, weight, type} = req.body;
   if (!name) {
     return res.status(404).send("El Pokemon DEBE tener un nombre");
   } else{
-    console.log(name);
+       console.log(name);
     try {
       let pokemonCreated = await Pokemon.create({
-        name,
+        name: name.toLowerCase(),
         hp,
         strength,
         defense,
@@ -180,10 +216,13 @@ router.post ('/pokemons', async (req, res) => {
         height,
         weight,
       });
-      let typeOnDb = await Types.findAll({
-        where: {name : types}
+      let typeOnDb = await Type.findAll({
+        where: {name : type}
       });
-      pokemonCreated.addTypes(typeOnDb);
+      pokemonCreated.addType(typeOnDb);
+      cache = [];
+      offset = 0;
+      getAllPokemons()
       res.send('Pokemon creado Exitosamente');
     } catch (error) {
       console.log(error);

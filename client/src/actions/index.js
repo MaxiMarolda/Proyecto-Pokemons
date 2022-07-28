@@ -1,3 +1,4 @@
+import { GET_POKEMONS_BY_NAME ,FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER } from './actionTypes'
 import axios from "axios";
 
 export function getPokemons(){
@@ -6,7 +7,19 @@ export function getPokemons(){
       
     });
     return dispatch({
-      type: 'GET_POKEMONS',
+      type: GET_POKEMONS,
+      payload: json.data
+    });
+  }
+};
+
+export function getPokemonsByName(name){
+  return async function(dispatch){
+    var json = await axios.get(`http://localhost:3001/pokemons?name=${name}`,{
+      
+    });
+    return dispatch({
+      type: GET_POKEMONS_BY_NAME,
       payload: json.data
     });
   }
@@ -18,7 +31,7 @@ export function getTypes(){
       
     });
     return dispatch({
-      type: 'GET_TYPES',
+      type: GET_TYPES,
       payload: json.data
     });
   }
@@ -26,14 +39,21 @@ export function getTypes(){
 
 export function filterPokemonsByType(payload){
     return {
-      type: 'FILTER_BY_TYPE',
+      type: FILTER_BY_TYPE,
       payload
     };
 };
 
 export function filterPokemonsByOrigin(payload){
   return {
-    type: 'FILTER_BY_ORIGIN',
+    type: FILTER_BY_ORIGIN,
+    payload
+  };
+};
+
+export function sortPokemonsByOrder(payload){
+  return {
+    type: SORT_BY_ORDER,
     payload
   };
 };
