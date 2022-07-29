@@ -39,20 +39,20 @@ const getPokemons = async () =>{
 const getDbInfo = async () => {
   try {
     let r =  await Pokemon.findAll({
-    include: {
-      model: Type,
-      attributes: ["name"],
-      through: {
-        attributes: []
+      include: {
+        model: Type,
+        attributes: ["name"],
+        through: {
+          attributes: []
+        },
       },
-    },
-  });
-  r = r.map((e) => ({...e.dataValues, type: e.types.map((e) => e.name)}))
-  for (let i = 0; i < r.length; i++) {
-    delete r[i].types;
-  }
-  console.log(r);
-  return r;
+    });
+    r = r.map((e) => ({...e.dataValues, type: e.types.map((e) => e.name)}))
+    for (let i = 0; i < r.length; i++) {
+      delete r[i].types;
+    }
+    console.log(r);
+    return r;
   } catch (e) {
     console.log(e)
   } 
@@ -202,35 +202,46 @@ router.get ('/types', async (req, res) => {
 });
 
 router.post ('/pokemons', async (req, res) => {
-  const {name, hp, strength, defense, speed, height, weight, type} = req.body;
-  if (!name) {
-    return res.status(404).send("El Pokemon DEBE tener un nombre");
-  } else{
-       console.log(name);
+  const {name, hp, strength, defense, speed, height, weight, type, img} = req.body;
     try {
-      let pokemonCreated = await Pokemon.create({
-        name: name.toLowerCase(),
-        hp,
-        strength,
-        defense,
-        speed,
-        height,
-        weight,
-      });
-      let typeOnDb = await Type.findAll({
-        where: {name : type}
-      });
-      pokemonCreated.addType(typeOnDb);
-      cache = [];
-      offset = 0;
-      getAllPokemons()
-      res.send('Pokemon creado Exitosamente');
-    } catch (error) {
+      if (name && typeof name === "string") {
+        if (hp > 0 && hp < 140 && 
+          strength > 0 && strength < 101 && 
+          defense > 0 && defense < 101 &&
+          speed > 0 && speed < 101 &&
+          height > 0 && height < 101 &&
+          weight > 0 && weight < 101
+        ) {
+            let pokemonCreated = await Pokemon.create({
+              name: name.toLowerCase(),
+              hp,
+              strength,
+              defense,
+              speed,
+              height,
+              weight,
+              img,
+            });
+            let typeOnDb = await Type.findAll({
+              where: {name : type}
+            });
+            pokemonCreated.addType(typeOnDb);
+            cache = [];
+            offset = 0;
+            getAllPokemons()
+            return res.status(200).send('Pokemon creado Exitosamente');
+          } else {
+            return res.status(404).send("El Pokemon DEBE tener todos los parámetros");
+          }
+      } else {
+        return res.status(404).send("El Pokemon DEBE tener un nombre");
+      }
+    }catch (error) {
       console.log(error);
       return res.status(400).send("El Pokemon ya existe, intente con otro nombre");
     } 
   }
-});
+);
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);

@@ -57,12 +57,8 @@ export default function Home (){
   return (
     <div className="Home">
       <h1>Come On Pokemons</h1>
-      <SearchBar/>
-      {/* <button onClick={e=> {handleOnClick(e)}}>
-        Reload all Pokemons
-      </button> */}
+      <SearchBar setCurrentPage={setCurrentPage}/>
       <div className="Selects">
-          {/* <h5>Por Tipo</h5> */}
         <select onChange={e => handleSelectType(e)}>
           <option value='all'>--Select type (All)--</option>
           {types.map((t) => {
@@ -71,13 +67,11 @@ export default function Home (){
               )}
             )}
         </select>
-        {/* <h5>Por Creados</h5> */}
         <select onChange={e => handleSelectOrigin(e)}>
           <option value= 'all'>--Select created (All)--</option>
           <option value= 'exis'>Existente</option>
           <option value= 'created'>Creado</option>
         </select>
-        {/* <h5>Por tipo de orden</h5> */}
         <select onChange={e => handleSortOrder(e)}>
           <option value= 'id'>--Select order (Id)--</option>
           <option value= 'asc'>Ascendente</option>

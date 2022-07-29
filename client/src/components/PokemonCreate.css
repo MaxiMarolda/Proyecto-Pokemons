@@ -1,6 +1,24 @@
 .DataTypes {
-  background: yellow;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+p {
+  background-color: rgb(155, 136, 136);
+   
+}
+p.danger {
+  color: red;
+  font-size: 12px;
+  margin-block-start: 0em;
+  padding: 0 4px;
+}
+
+input.danger {
+  border: 2px solid red;
+}
+.input{
+  display: flex;
+  height: 20px;
+  padding: 2px;
 }

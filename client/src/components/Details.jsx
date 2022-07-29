@@ -18,5 +18,5 @@ export default function PokemonDetails(){
   //     <h5>Attack: {hp}</h5>
   //     <img src={img} alt="no se encontró la imagen" />
   //   </div>
-  // )
+  )
 }

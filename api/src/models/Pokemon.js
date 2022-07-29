@@ -52,7 +52,7 @@ module.exports = (sequelize) => {
         defaultValue: 0
       },
       img: {
-        type: DataTypes.BLOB
+        type: DataTypes.STRING
       },
       created: {
         type: DataTypes.BOOLEAN,

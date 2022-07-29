@@ -5,7 +5,7 @@ import {getPokemonsByName, getPokemons} from '../actions/index';
 import {Link } from "react-router-dom";
 import './SearchBar.css'
 
-export default function SearchBar () {
+export default function SearchBar ({setCurrentPage}) {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   //const renderState = useSelector ((state) => state.render);
@@ -23,6 +23,7 @@ export default function SearchBar () {
 
   function handleSubmit() {
     dispatch(getPokemonsByName(name));
+    setCurrentPage(1);
     setName("");
   }
 
