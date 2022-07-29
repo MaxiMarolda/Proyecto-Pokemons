@@ -2,19 +2,21 @@ import React from "react";
 import {useState, useEffect } from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {sortPokemonsByOrder, filterPokemonsByOrigin, filterPokemonsByType, getPokemons} from "../../actions";
-import {Link } from "react-router-dom";
+//import {Link } from "react-router-dom";
 import Card from "../Card/Card";
 import "./Home.css";
 import Paginado from '../Paginado';
 import SearchBar from "../SearchBar";
 
 
+
 export default function Home (){
 
   const dispatch = useDispatch();
   const allPokemons = useSelector ((state) => state.pokemons);
- //const renderState = useSelector ((state) => state.render);
+  const types = useSelector((state) => state.types)
   const [currentPage, setCurrentPage] = useState(1);
+  // eslint-disable-next-line
   const [pokemonsPerPage, setPokemonsPerPage] = useState(12);
   const [render, setRender] = useState('');
   const indexOfLastPokemon = currentPage * pokemonsPerPage
@@ -25,16 +27,14 @@ export default function Home (){
     setCurrentPage(pageNumber)
   }
 
-//  setPokemonsPerPage(12);
-
   useEffect (() => {
     dispatch(getPokemons());
   },[dispatch]);
 
-  function handleOnClick (e) {
-    e.preventDefault();
-    dispatch(getPokemons());
-  };
+  // function handleOnClick (e) {
+  //   e.preventDefault();
+  //   dispatch(getPokemons());
+  // };
   function handleSelectType (e) {
     e.preventDefault();
     dispatch(filterPokemonsByType(e.target.value));
@@ -50,51 +50,36 @@ export default function Home (){
     e.preventDefault();
     dispatch(sortPokemonsByOrder(e.target.value));
     setCurrentPage(1);
-    setRender(`Lo ejecuto para renderizar${e.target.value}`)
+    setRender(`Lo ejecuto para renderizar${e.target.value}`);
+    console.log(render);
   }
 
   return (
-    <div>
-      <Link to = '/pokemon'>Crear Pokemon</Link>
-      <h1>Vamos los Pokemons</h1>
-      <SearchBar className='SearchBar'
-      />
-      <button onClick={e=> {handleOnClick(e)}}>
-        Volver a cargar todos los Pokemons
-      </button>
+    <div className="Home">
+      <h1>Come On Pokemons</h1>
+      <SearchBar/>
+      {/* <button onClick={e=> {handleOnClick(e)}}>
+        Reload all Pokemons
+      </button> */}
       <div className="Selects">
-          <h5>Por Tipo</h5>
+          {/* <h5>Por Tipo</h5> */}
         <select onChange={e => handleSelectType(e)}>
-          <option selected disabled>Select type</option>
-          <option value= 'all'>Todos</option>
-          <option value= 'dragon'>Dragon</option>
-          <option value= 'dark'>Dark</option>
-          <option value= 'electric'>Electric</option>
-          <option value= 'fairy'>Fairy</option>
-          <option value= 'fighting'>Fighting</option>
-          <option value= 'fire'>Fire</option>
-          <option value= 'flying'>Flying</option>
-          <option value= 'ghost'>Ghost</option>
-          <option value= 'grass'>Grass</option>
-          <option value= 'ground'>Ground</option>
-          <option value= 'normal'>Normal</option>
-          <option value= 'poison'>Poison</option>
-          <option value= 'psychic'>Psychic</option>
-          <option value= 'rock'>Rock</option>
-          <option value= 'shadow'>Shadow</option>
-          <option value= 'steel'>Steel</option>
-          <option value= 'unknown'>Unknown</option>
-          <option value= 'water'>Water</option>
+          <option value='all'>--Select type (All)--</option>
+          {types.map((t) => {
+            return(
+              <option key= {t.id} value={t.name}>{t.name}</option>
+              )}
+            )}
         </select>
-        <h5>Por Creados</h5>
+        {/* <h5>Por Creados</h5> */}
         <select onChange={e => handleSelectOrigin(e)}>
-          <option value= 'all'>Todos</option>
+          <option value= 'all'>--Select created (All)--</option>
           <option value= 'exis'>Existente</option>
           <option value= 'created'>Creado</option>
         </select>
-        <h5>Por tipo de orden</h5>
+        {/* <h5>Por tipo de orden</h5> */}
         <select onChange={e => handleSortOrder(e)}>
-          <option value= 'id'>Id</option>
+          <option value= 'id'>--Select order (Id)--</option>
           <option value= 'asc'>Ascendente</option>
           <option value= 'dsc'>Descendente</option>
           <option value= 'hp'>Ataque</option>

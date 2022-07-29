@@ -190,7 +190,8 @@ router.get ('/types', async (req, res) => {
     const types = typesApi.data.results.map (el => el.name);
     types.forEach (type => {
       Type.findOrCreate({
-        where: {name: type}
+        where: {name: type},
+       // order: {name: 'ASC'}
       });
     });
     const allTypes = await Type.findAll();

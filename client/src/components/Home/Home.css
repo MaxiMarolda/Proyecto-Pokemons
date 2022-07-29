@@ -13,8 +13,23 @@
   padding-right: 15px;
 }
 .NoPokemonsToShow {
-  background-color: rgba(0, 89, 255, 0.401);
+  background-color: rgba(194, 116, 60, 0.659);
 }
+.SearchBar {
+  padding: 0 15px;
+}
+img {
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0;
+    /* filter: blur(20px) */
+  }
+  10% { opacity: 1;
+    filter: brightness(1.5) blur(10px)}
+}
+
 /* .Paginado ol {
   list-style-type: none;
 

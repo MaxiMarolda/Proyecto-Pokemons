@@ -1,9 +1,8 @@
-import { GET_POKEMONS_BY_NAME, FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER } from '../actions/actionTypes'
+import { POST_POKEMON, GET_POKEMONS_BY_NAME, FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER } from '../actions/actionTypes'
 const initialState = {
   pokemons : [],
   allPokemons : [],
   types: [],
-  render: ""
 }
 
 function reducer (state= initialState, {type, payload}){
@@ -15,15 +14,24 @@ function reducer (state= initialState, {type, payload}){
         pokemons: payload,
         allPokemons: payload
       };
+    case POST_POKEMON:
+      return{
+        ...state,
+        //allPokemons:
+      };
     case GET_POKEMONS_BY_NAME:
       return{
         ...state,
         pokemons: payload
       }
     case GET_TYPES:
+      const typeOrdered = payload.sort(function (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+        return 0;})
       return{
         ...state,
-        types: payload
+        types: typeOrdered
       };
     case FILTER_BY_TYPE:
       const statusFiltered = payload === 'all' 

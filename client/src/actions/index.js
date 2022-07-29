@@ -13,6 +13,15 @@ export function getPokemons(){
   }
 };
 
+
+export function postPokemon(payload){
+  return async function(dispatch){  
+    const response = await axios.post(`http://localhost:3001/pokemons`,payload);
+    console.log(response);
+    return response;
+  }
+};
+
 export function getPokemonsByName(name){
   return async function(dispatch){
     var json = await axios.get(`http://localhost:3001/pokemons?name=${name}`,{

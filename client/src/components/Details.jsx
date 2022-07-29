@@ -1,10 +1,11 @@
-//import React from "react";
-// import { useDispatch, useSelector} from 'react-redux';
+// import React from "react";
+// import { useSelector, useDispatch} from "react-redux";
 // import { useParams } from 'react-router-dom';
 
 
 
-function pokemonDetails() {
+export default function PokemonDetails(){
+  // const [data, setData] = React.useState();
   // const id = useParams();
   // const dispatch = useDispatch();
   // const poke = useSelector (state => state.pokemons);
@@ -19,5 +20,3 @@ function pokemonDetails() {
   //   </div>
   // )
 }
-
-export default pokemonDetails
