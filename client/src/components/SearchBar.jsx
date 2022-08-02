@@ -9,7 +9,7 @@ export default function SearchBar ({setCurrentPage}) {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   //const renderState = useSelector ((state) => state.render);
-  const allPokemons = useSelector ((state) => state.pokemons);
+  const allPokemons = useSelector ((state) => state.allPokemons);
 
   function handleOnClick (e) {
     e.preventDefault();
@@ -28,6 +28,7 @@ export default function SearchBar ({setCurrentPage}) {
   }
 
   const pokeNames = allPokemons.map (e => e.name)
+  
   return (
     <div className="SearchBar">
       <label>
@@ -35,20 +36,23 @@ export default function SearchBar ({setCurrentPage}) {
           list='Pokemons'
           value={name}
           type = 'text'
-          placeholder = 'Buscar Pokemon ...'
+          placeholder = 'Pokemon search...'
           onChange = {e => handleInputChange(e)}
           />
           <button 
           type = 'submit'
           onClick = {e => handleSubmit(e)}
-          >Buscar</button>
+          >Search</button>
       </label>
-      <Link to = '/pokemon/create'>
-        <button>Pokemon Create</button>
-      </Link>
       <button onClick={e=> {handleOnClick(e)}}>
         Reload all Pokemons
       </button>
+      <Link to = '/pokemon/create'>
+        <button>Create your own Pokemon </button>
+      </Link>
+      <Link to = '/'>
+        <button>Back to Landing page</button>
+      </Link>
       <datalist id="Pokemons">
           {pokeNames.map((poke,index) => {
             return(

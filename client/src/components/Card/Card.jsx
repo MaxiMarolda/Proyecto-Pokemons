@@ -1,13 +1,18 @@
 import React from "react";
-import './Card.css'
+import {Link} from "react-router-dom";
+import './Card.css';
 
-export default function Card({name, hp, img, type}) {
+export default function Card({id, name, hp, img, type}) {
+
+ 
   return (
     <div className="PokeCard">
-      {//console.log(type.length)}
-      //{console.log(type[0])
+      {//console.log(type.length)
+      }{//console.log(currentPage)
       }
-      <h4>{name.toUpperCase()}</h4>
+      <Link className="PokeLink" to={`/details/${id}`}>
+        <h4>{name.toUpperCase()}</h4>
+      </Link>
       <h5>Types: {type.length === 0
                   ? ("No type available")
                   :type.length === 1 

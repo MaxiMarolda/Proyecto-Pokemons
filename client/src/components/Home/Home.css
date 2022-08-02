@@ -4,7 +4,8 @@
   justify-content: center;
 }
 .Selects {
-  display: flex;
+  width: 65%;
+  display: inline-flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -29,7 +30,26 @@ img {
   10% { opacity: 1;
     filter: brightness(1.5) blur(10px)}
 }
-
+.PokeCard:hover {
+  animation: fadeInCard .5s ease;
+  background: rgb(182, 220, 12);
+}
+@keyframes fadeInCard {
+  0% { opacity: 0;
+    /* filter: blur(20px) */
+  }
+  10% { opacity: 1;
+    filter: brightness(0.5) blur(2px)}
+}
+h2 {
+  background: gray;
+}
+.DestroyButton {
+  width: -webkit-fill-available;
+  height: 40px;
+  font-size: 30px;
+  background: yellow;
+}
 /* .Paginado ol {
   list-style-type: none;
 

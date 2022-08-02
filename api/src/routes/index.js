@@ -2,16 +2,14 @@ const { Router } = require('express');
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 const axios = require("axios");
-//const Tipo = require('../models/Tipo');
 const {Pokemon ,Type} = require('../db');
-
 
 
 const router = Router();
 let cache = [];
 
 var offset = 0;
-var limit = 10;
+var limit = 20;
 
 const getPokemons = async () =>{
   console.log(`pedido a la api desde ${offset} cantidad ${limit}`);
@@ -38,7 +36,7 @@ const getPokemons = async () =>{
 
 const getDbInfo = async () => {
   try {
-    let r =  await Pokemon.findAll({
+    let pokes =  await Pokemon.findAll({
       include: {
         model: Type,
         attributes: ["name"],
@@ -47,12 +45,12 @@ const getDbInfo = async () => {
         },
       },
     });
-    r = r.map((e) => ({...e.dataValues, type: e.types.map((e) => e.name)}))
-    for (let i = 0; i < r.length; i++) {
-      delete r[i].types;
+    pokes = pokes.map((e) => ({...e.dataValues, type: e.types.map((e) => e.name)}))
+    for (let i = 0; i < pokes.length; i++) {
+      delete pokes[i].types;
     }
-    console.log(r);
-    return r;
+    //console.log(pokes);
+    return pokes;
   } catch (e) {
     console.log(e)
   } 
@@ -64,31 +62,30 @@ const getAllPokemons = async () => {
   let apiInfo3 = [];
   console.log(cache.length)
   if(cache.length > 39){
-   console.log(`De la cache ${cache}`);
+   //console.log(`De la cache ${cache}`);
     return cache; 
   } else {
-    console.log("consulto la webApi");
+    //console.log("consulto la webApi");
     while (offset < 39){
       apiInfo3 = (await getPokemons());
       apiInfo2 = apiInfo2.concat(apiInfo3);
       offset += limit;
-      console.log(`ApiInfo 2 ${apiInfo2}`);
+      //console.log(`ApiInfo 2 ${apiInfo2}`);
     };
     const dbInfo = await getDbInfo();
-        console.log("consulto la DB");
+       //console.log("consulto la DB");
     const infoTotal = apiInfo2.concat(dbInfo);
     infoTotal.map (el => cache.push(el));
-        console.log(`Desde la web ${cache}`);
+        //console.log(`Desde la web ${cache}`);
     return infoTotal;
   }
 };
 
 router.get ('/pokemons', async (req, res) => {
   let { name } = req.query;
-  console.log(`Console de nombre: ${name}`);
   if (!name) {
-    console.log("entre al if");
-    try {
+    //console.log(`Console de nombre: ${name}`);
+      try {
       let pokemonsTotal = await getAllPokemons();//getDbInfo()
       return res.send(pokemonsTotal)
     } catch (error) {
@@ -160,7 +157,7 @@ router.get ('/pokemons/:ID', async (req, res) => {
       };
       return apiInfoFinal;
     } else {
-      return await Pokemon.findOne({
+      let pokes =  await Pokemon.findOne({
         where: {id : ID},
         include: {
           model: Type,
@@ -168,16 +165,18 @@ router.get ('/pokemons/:ID', async (req, res) => {
           through: {
             attributes: [],
           }
-        },
-        attributes: ["id","name","img","hp","strength","defense","speed","height","weight","created"]
+        }
        });
-    };
-  } 
-
-  let pokemon = await getPokemon();
+        pokes = pokes.dataValues;
+        pokes.type = pokes.types.map((e) => e.name)
+        delete pokes.types;
+      console.log(pokes.type)
+      return pokes;
+    } 
+  }
 
   try {
-    return res.send(pokemon)
+    return res.send(await getPokemon())
   } catch (error) {
     console.log(error);
     return res.status(400).send("Error en la consulta");
@@ -191,7 +190,6 @@ router.get ('/types', async (req, res) => {
     types.forEach (type => {
       Type.findOrCreate({
         where: {name: type},
-       // order: {name: 'ASC'}
       });
     });
     const allTypes = await Type.findAll();
@@ -205,7 +203,7 @@ router.post ('/pokemons', async (req, res) => {
   const {name, hp, strength, defense, speed, height, weight, type, img} = req.body;
     try {
       if (name && typeof name === "string") {
-        if (hp > 0 && hp < 140 && 
+        if (hp > 0 && hp < 141 && 
           strength > 0 && strength < 101 && 
           defense > 0 && defense < 101 &&
           speed > 0 && speed < 101 &&
@@ -226,9 +224,9 @@ router.post ('/pokemons', async (req, res) => {
               where: {name : type}
             });
             pokemonCreated.addType(typeOnDb);
-            cache = [];
-            offset = 0;
-            getAllPokemons()
+            cache = [];           //Drain the Cache memory
+            offset = 0;           //Set Offset in 0 to force a new API search
+            getAllPokemons()      //Re build the new Cache includding the new added pokemon
             return res.status(200).send('Pokemon creado Exitosamente');
           } else {
             return res.status(404).send("El Pokemon DEBE tener todos los parámetros");
@@ -241,7 +239,25 @@ router.post ('/pokemons', async (req, res) => {
       return res.status(400).send("El Pokemon ya existe, intente con otro nombre");
     } 
   }
-);
+); 
+
+router.delete ('/pokemon/:ID', async (req, res) => {
+  const { ID } = req.params;
+  console.log(ID);
+  try {
+    let deletePokemon = await Pokemon.destroy({
+      where: {id : ID}
+    })
+    cache = [];           //Drain the Cache memory
+    offset = 0;           //Set Offset in 0 to force a new API search
+    getAllPokemons()      //Re build the new Cache excludding the recently destroyed pokemon
+    return deletePokemon === 0
+     ? res.status(404).send("something went wrong, Pokemon was not deleted")
+     :res.status(200).send(`The Pokemon was Destroyed!!!`)
+  } catch (error) {
+    return res.status(500).send("something went wrong, internal server error")
+  }
+})
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);

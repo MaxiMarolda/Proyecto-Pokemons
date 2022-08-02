@@ -4,14 +4,18 @@
   justify-content: center;
 }
 p {
-  background-color: rgb(155, 136, 136);
-   
+  height: 5px;   
 }
-p.danger {
+span.danger {
   color: red;
-  font-size: 12px;
   margin-block-start: 0em;
-  padding: 0 4px;
+  padding: 0px 4px;
+  background: gray;
+  margin-top: 10px;
+  font-size: 17px;
+}
+.divDanger {
+    text-align: start;
 }
 
 input.danger {
@@ -21,4 +25,14 @@ input.danger {
   display: flex;
   height: 20px;
   padding: 2px;
+}
+.displayTrue {
+  visibility: visible;
+}
+.FormatForm {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 3px;
 }

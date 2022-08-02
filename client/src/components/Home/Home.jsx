@@ -1,8 +1,7 @@
 import React from "react";
 import {useState, useEffect } from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {sortPokemonsByOrder, filterPokemonsByOrigin, filterPokemonsByType, getPokemons} from "../../actions";
-//import {Link } from "react-router-dom";
+import {sortPokemonsByOrder, filterPokemonsByOrigin, filterPokemonsByType, getPokemons, refresh} from "../../actions";
 import Card from "../Card/Card";
 import "./Home.css";
 import Paginado from '../Paginado';
@@ -13,7 +12,8 @@ import SearchBar from "../SearchBar";
 export default function Home (){
 
   const dispatch = useDispatch();
-  const allPokemons = useSelector ((state) => state.pokemons);
+  const dispPokemons = useSelector ((state) => state.pokemons);
+  const allPokemons = useSelector ((state) => state.allPokemons);
   const types = useSelector((state) => state.types)
   const [currentPage, setCurrentPage] = useState(1);
   // eslint-disable-next-line
@@ -21,13 +21,14 @@ export default function Home (){
   const [render, setRender] = useState('');
   const indexOfLastPokemon = currentPage * pokemonsPerPage
   const indexOfFirstPokemon = indexOfLastPokemon - pokemonsPerPage;
-  const currentPokemons = allPokemons.slice(indexOfFirstPokemon, indexOfLastPokemon)
+  const currentPokemons = dispPokemons.slice(indexOfFirstPokemon, indexOfLastPokemon)
 
   const paginado = (pageNumber) => {
     setCurrentPage(pageNumber)
   }
 
   useEffect (() => {
+    dispatch(refresh())
     dispatch(getPokemons());
   },[dispatch]);
 
@@ -69,42 +70,44 @@ export default function Home (){
         </select>
         <select onChange={e => handleSelectOrigin(e)}>
           <option value= 'all'>--Select created (All)--</option>
-          <option value= 'exis'>Existente</option>
-          <option value= 'created'>Creado</option>
+          <option value= 'exis'>Existent</option>
+          <option value= 'created'>Created</option>
         </select>
         <select onChange={e => handleSortOrder(e)}>
           <option value= 'id'>--Select order (Id)--</option>
-          <option value= 'asc'>Ascendente</option>
-          <option value= 'dsc'>Descendente</option>
-          <option value= 'hp'>Ataque</option>
+          <option value= 'asc'>Ascendent</option>
+          <option value= 'dsc'>Descendent</option>
+          <option value= 'hp'>Attack</option>
         </select>
       </div>
-      <Paginado
+      <br/>
+        <Paginado
         pokemonsPerPage = {pokemonsPerPage}
-        allPokemons = {allPokemons.length}
+        dispPokemons = {dispPokemons.length}
         paginado = {paginado}
         />
       <div className="Pokemons">
-      {currentPokemons.length ?
-          currentPokemons.map(poke => 
-            {//console.log(poke.type)
-              //console.log(poke.id)
-              return(
-                    <Card
-                      key={poke.id}
-                      //<Link className="PokeCard" to={`/pokemons/${poke.id}`}>
+          {allPokemons.length ?
+            (currentPokemons.length ?
+            currentPokemons.map(poke => 
+              {return(
+                      <Card
+                        key={poke.id}
+                        id={poke.id}
                         name={poke.name}
-                      //</Link>
-                      type={poke.type}
-                      hp={poke.hp}
-                      img={poke.img}
-                    />)}
-            )
-        : <div className="NoPokemonsToShow">
-          <h3>No hay Pokemons de este tipo para mostrar</h3>
-          <p>Por favor cambie su elección de filtro</p>
-          </div>}
-      </div> 
+                        type={poke.type}
+                        hp={poke.hp}
+                        img={poke.img}
+                      />)}
+              )
+              : <div className="NoPokemonsToShow">
+                <h3>No hay Pokemons de este tipo para mostrar</h3>
+                <p>Por favor cambie su elección de filtro</p>
+                </div>)
+            :( <h2>
+              Loading...
+              </h2> )}
+        </div> 
     </div>
 
   )

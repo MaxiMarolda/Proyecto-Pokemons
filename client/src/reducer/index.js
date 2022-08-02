@@ -1,8 +1,9 @@
-import { POST_POKEMON, GET_POKEMONS_BY_NAME, FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER } from '../actions/actionTypes'
+import { DESTROY_POKEMON, POST_POKEMON, GET_POKEMONS_BY_NAME, FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER, GET_POKEMONS_BY_ID, CLEAR_PAGE, GLOBAL_REFRESH } from '../actions/actionTypes'
 const initialState = {
   pokemons : [],
   allPokemons : [],
   types: [],
+  pokemonDetail: [],
 }
 
 function reducer (state= initialState, {type, payload}){
@@ -17,12 +18,20 @@ function reducer (state= initialState, {type, payload}){
     case POST_POKEMON:
       return{
         ...state,
-        //allPokemons:
+      };
+    case DESTROY_POKEMON:
+      return{
+        ...state,
       };
     case GET_POKEMONS_BY_NAME:
       return{
         ...state,
         pokemons: payload
+      };
+    case GET_POKEMONS_BY_ID:
+      return{
+        ...state,
+        pokemonDetail: payload
       }
     case GET_TYPES:
       const typeOrdered = payload.sort(function (a, b) {
@@ -32,6 +41,15 @@ function reducer (state= initialState, {type, payload}){
       return{
         ...state,
         types: typeOrdered
+      };
+    case CLEAR_PAGE: return {
+      ...state,
+      pokemonDetail: []
+      };
+    case GLOBAL_REFRESH: return {
+      ...state,
+      pokemons: [],
+      allPokemons: []
       };
     case FILTER_BY_TYPE:
       const statusFiltered = payload === 'all' 
@@ -56,7 +74,6 @@ function reducer (state= initialState, {type, payload}){
     case SORT_BY_ORDER:
       switch (payload) {
         case 'asc':
-          console.log("Entre 1");
           state.pokemons.sort(function (a, b) {
             if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
             if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
@@ -64,7 +81,6 @@ function reducer (state= initialState, {type, payload}){
           });
           break;
         case 'dsc':
-          console.log("Entre 2");
           state.pokemons.sort(function (a, b) {
             if (a.name.toLowerCase() < b.name.toLowerCase()) return 1;
             if (a.name.toLowerCase() > b.name.toLowerCase()) return -1;

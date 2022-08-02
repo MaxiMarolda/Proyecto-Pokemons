@@ -1,17 +1,6 @@
-import { GET_POKEMONS_BY_NAME ,FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER } from './actionTypes'
+import {GLOBAL_REFRESH, GET_POKEMONS_BY_NAME ,FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER, GET_POKEMONS_BY_ID, CLEAR_PAGE } from './actionTypes'
 import axios from "axios";
 
-// export function getPokemons(){
-//   return async (dispatch) => {
-//     var json = await axios.get("http://localhost:3001/pokemons",{
-      
-//     });
-//     return dispatch({
-//       type: GET_POKEMONS,
-//       payload: json.data
-//     });
-//   }
-// };
 
 export function getPokemons(){
   return (dispatch) => {
@@ -21,16 +10,9 @@ export function getPokemons(){
         type: GET_POKEMONS,
         payload: r.data
         }))
-      .catch((e) => e);
+      .catch((e) => e); //This is to recieve the error comming from the Back
   }
 };
-/*export function postPokemon(payload){
-  return async function(){  
-    const response = await axios.post(`http://localhost:3001/pokemons`,payload);
-    console.log(response);
-    return response;
-  }
-}; */
 
 export function postPokemon(payload){
   return async () => {
@@ -51,6 +33,18 @@ export function getPokemonsByName(name){
     });
     return dispatch({
       type: GET_POKEMONS_BY_NAME,
+      payload: json.data
+    });
+  }
+};
+
+export function getPokemonsById(id){
+  return async function(dispatch){
+    var json = await axios.get(`http://localhost:3001/pokemons/${id}`,{
+      
+    });
+    return dispatch({
+      type: GET_POKEMONS_BY_ID,
       payload: json.data
     });
   }
@@ -87,4 +81,29 @@ export function sortPokemonsByOrder(payload){
     type: SORT_BY_ORDER,
     payload
   };
+};
+
+export function clearPage (){
+  return {
+    type: CLEAR_PAGE
+  }
+};
+
+export function deletePokemon (id){
+  return async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3001/pokemon/${id}`);
+      //console.log( response);
+      return response;
+    } catch (e) {
+      return e;
+    }
+  };
+};
+
+export function refresh (){
+  return {
+    type: GLOBAL_REFRESH,
+    
+  }; 
 };

@@ -1,8 +1,8 @@
 import React from "react";
 
-const Paginado = ({pokemonsPerPage, allPokemons, paginado}) =>{
+const Paginado = ({pokemonsPerPage, dispPokemons, paginado}) =>{
   const pageNumbers = [];
-  const pageTotal = Math.ceil(allPokemons/pokemonsPerPage);
+  const pageTotal = Math.ceil(dispPokemons/pokemonsPerPage);
 
   for (let i = 1; i <= pageTotal; i++) {
     pageNumbers.push(i);
