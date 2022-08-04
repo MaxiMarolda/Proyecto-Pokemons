@@ -15,10 +15,10 @@ export default function LandingPage(){
 
   return(
     <div>
-      <h1>Bienvenidos a la App de Pokemones</h1>
-      <h4>Esta es una App con propósito educativo y forma parte del boot camp de Henry</h4>
+      <h1>Wellcome to the Pokemons App</h1>
+      <h3>This an App with educational purposes and is part of Henry's bootcamp</h3>
       <Link to = '/home'>
-        <button>Ingreso</button>
+        <button className="AccessButton">Access</button>
       </Link>
     </div>
   )

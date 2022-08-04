@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {getPokemonsByName, getPokemons} from '../actions/index';
+import {getPokemonsByName, getPokemons} from '../../actions/index';
 import {Link } from "react-router-dom";
 import './SearchBar.css'
 

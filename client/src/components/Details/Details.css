@@ -21,7 +21,14 @@ h3 {
 
 .DestroyButton {
   width: -webkit-fill-available;
-  height: 40px;
+  height: 44px;
   font-size: 30px;
   background: yellow;
+  border-radius: 5px;
+}
+
+.DestroyButton:hover {
+  border: solid 3px yellow;
+  background: red;
+  cursor: pointer;
 }

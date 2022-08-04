@@ -5,7 +5,7 @@ import {sortPokemonsByOrder, filterPokemonsByOrigin, filterPokemonsByType, getPo
 import Card from "../Card/Card";
 import "./Home.css";
 import Paginado from '../Paginado';
-import SearchBar from "../SearchBar";
+import SearchBar from "../SearchBar/SearchBar";
 
 
 
@@ -14,28 +14,24 @@ export default function Home (){
   const dispatch = useDispatch();
   const dispPokemons = useSelector ((state) => state.pokemons);
   const allPokemons = useSelector ((state) => state.allPokemons);
-  const types = useSelector((state) => state.types)
+  const types = useSelector((state) => state.types);
   const [currentPage, setCurrentPage] = useState(1);
   // eslint-disable-next-line
   const [pokemonsPerPage, setPokemonsPerPage] = useState(12);
   const [render, setRender] = useState('');
-  const indexOfLastPokemon = currentPage * pokemonsPerPage
+  const indexOfLastPokemon = currentPage * pokemonsPerPage;
   const indexOfFirstPokemon = indexOfLastPokemon - pokemonsPerPage;
-  const currentPokemons = dispPokemons.slice(indexOfFirstPokemon, indexOfLastPokemon)
+  const currentPokemons = dispPokemons.slice(indexOfFirstPokemon, indexOfLastPokemon);
 
   const paginado = (pageNumber) => {
     setCurrentPage(pageNumber)
-  }
+  };
 
   useEffect (() => {
     dispatch(refresh())
     dispatch(getPokemons());
   },[dispatch]);
 
-  // function handleOnClick (e) {
-  //   e.preventDefault();
-  //   dispatch(getPokemons());
-  // };
   function handleSelectType (e) {
     e.preventDefault();
     dispatch(filterPokemonsByType(e.target.value));
@@ -45,13 +41,13 @@ export default function Home (){
     e.preventDefault();
     dispatch(filterPokemonsByOrigin(e.target.value));
     setCurrentPage(1);
-  }
+  };
   
   function handleSortOrder (e) {
     e.preventDefault();
     dispatch(sortPokemonsByOrder(e.target.value));
     setCurrentPage(1);
-    setRender(`Lo ejecuto para renderizar${e.target.value}`);
+    setRender(`Rendering page${e.target.value}`);
     console.log(render);
   }
 
@@ -85,6 +81,7 @@ export default function Home (){
         pokemonsPerPage = {pokemonsPerPage}
         dispPokemons = {dispPokemons.length}
         paginado = {paginado}
+        currentPage = {currentPage}
         />
       <div className="Pokemons">
           {allPokemons.length ?

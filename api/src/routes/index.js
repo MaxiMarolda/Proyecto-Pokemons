@@ -90,7 +90,7 @@ router.get ('/pokemons', async (req, res) => {
       return res.send(pokemonsTotal)
     } catch (error) {
       console.log(error)
-      return res.status(400).send("Error en la consulta");
+      return res.status(400).send("Error in the query");
     }
   } else {
     name = name.toLowerCase();
@@ -98,10 +98,10 @@ router.get ('/pokemons', async (req, res) => {
       let pokemonName = await cache.filter( e => e.name === name);
       return pokemonName.length ?
             res.json(pokemonName) :
-            res.status(404).send('No existe ese personaje')    
+            res.status(404).send("The Pokemon does not exists")    
     } catch (error) {
       console.log(error);
-      return res.status(400).send("Error en la consulta");
+      return res.status(400).send("Error in the query");
     }
     
 
@@ -112,15 +112,15 @@ router.get ('/pokemons', async (req, res) => {
 
 router.get ('/db', async (req, res) => {
   let { name } = req.query;
-  console.log(`Console de nombre: ${name}`);
+ // console.log(`Console de nombre: ${name}`);
   if (!name) {
-    console.log("entre al if");
+    //console.log("entre al if");
     try {
       let pokemonsTotal = await getDbInfo();
       return res.send(pokemonsTotal)
     } catch (error) {
       console.log(error)
-      return res.status(400).send("Error en la consulta");
+      return res.status(400).send("Error in the query");
     }
   } else {
     name = name.toLowerCase();
@@ -128,10 +128,10 @@ router.get ('/db', async (req, res) => {
       let pokemonName = await cache.filter( e => e.name === name);
       return pokemonName.length ?
             res.json(pokemonName) :
-            res.status(404).send('No existe ese personaje')    
+            res.status(404).send("The Pokemon does not exists")    
     } catch (error) {
       console.log(error);
-      return res.status(400).send("Error en la consulta");
+      return res.status(400).send("Error in the query");
     }
     
 
@@ -223,20 +223,21 @@ router.post ('/pokemons', async (req, res) => {
             let typeOnDb = await Type.findAll({
               where: {name : type}
             });
+            if (!typeOnDb[0]) return res.status(404).send("The Pokemon must have a valid Type"); 
             pokemonCreated.addType(typeOnDb);
             cache = [];           //Drain the Cache memory
             offset = 0;           //Set Offset in 0 to force a new API search
             getAllPokemons()      //Re build the new Cache includding the new added pokemon
-            return res.status(200).send('Pokemon creado Exitosamente');
+            return res.status(200).send('Pokemon was created');
           } else {
-            return res.status(404).send("El Pokemon DEBE tener todos los parámetros");
+            return res.status(404).send("The Pokemon MUST have all valid para meters");
           }
       } else {
-        return res.status(404).send("El Pokemon DEBE tener un nombre");
+        return res.status(404).send("The Pokemon MUST have a name");
       }
     }catch (error) {
       console.log(error);
-      return res.status(400).send("El Pokemon ya existe, intente con otro nombre");
+      return res.status(400).send("The Pokemon allready exists, please try with another name");
     } 
   }
 ); 

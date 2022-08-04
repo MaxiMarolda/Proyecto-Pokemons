@@ -18,6 +18,8 @@ function reducer (state= initialState, {type, payload}){
     case POST_POKEMON:
       return{
         ...state,
+        pokemons: [],
+        allPokemons: []
       };
     case DESTROY_POKEMON:
       return{

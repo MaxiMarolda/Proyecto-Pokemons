@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory } from 'react-router-dom';
-import { postPokemon, getTypes } from "../actions";
+import { Link } from 'react-router-dom';
+import { postPokemon, getTypes, refresh, getPokemons } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import './PokemonCreate.css'
 
@@ -41,7 +41,6 @@ export function validate(data) {
 
 export default function PokemonCreate() {
   const dispatch = useDispatch();
-  const history = useHistory();
   const types = useSelector((state) => state.types);
   const allPokemons = useSelector((state) => state.allPokemons);
   const picId = allPokemons.length + 800;
@@ -60,7 +59,7 @@ export default function PokemonCreate() {
   const [data, setData] = useState(initialPokemonState);
   const [errors, setErrors] = useState({})
   
-  useEffect(() => {
+  useEffect(() => {              //  INITIAL HOOK //
     dispatch(getTypes())
   }, [dispatch]);
 
@@ -69,9 +68,6 @@ export default function PokemonCreate() {
       ...data,
       [e.target.name]: e.target.value
     });
-    // console.log(data);
-    // console.log(data.type);
-    // console.log(picId);
     setErrors(validate({
       ...data,
       [e.target.name]: e.target.value}
@@ -80,13 +76,10 @@ export default function PokemonCreate() {
 
   function handleType(e) {        //TYPE SELECTION 
     e.preventDefault();
-    //if(data.type.includes(e.target.value)) {
         setData({
               ...data,
               type: [...data.type, e.target.value]
             })
-    //      }
-    //if(!!data.type.includes(e.target.value)) alert("The Type  has already been selected");
   };
 
   function handleDelete(e) {    //TYPE CORRECTION OPTION
@@ -99,19 +92,26 @@ export default function PokemonCreate() {
 
   function handleOnSubmit(e) { // FORM SUBMIT ACTION
     e.preventDefault();
-    dispatch(postPokemon(data))
-      .then(r => {
-        r.data ? alert(r.data) 
-          : alert(r.response.data)
-      });
-    setData(initialPokemonState);
-    history.push('/home')
+    if(Object.keys(validate(data)).length > 0) {
+      alert ("There are missing or wrong data in the form")
+      return
+    } else {
+      dispatch(postPokemon(data))
+        .then(r => {
+          r.data ? alert(r.data) 
+            : alert(r.response.data)
+        });
+      setData(initialPokemonState);
+      dispatch(getPokemons())
+     // window.location.reload();
+    }
   };
                                       /* FORM */
   return (
     <div className="CreateForm">
         <h2>Lets create our own Pokemon</h2>
       <div className="FormatForm">
+        <div></div>
         <form onSubmit={handleOnSubmit}>
           <label>Name: </label>
           <input className={errors.name && "danger"} 
@@ -200,7 +200,7 @@ export default function PokemonCreate() {
           <br/> <br/>            {/* CREATE BUTTON */}
           <button className="CreateButton" type="submit">Create</button>
         </form>
-        <div className="divDanger">
+        <div className="divDanger">    {/* VALIDATION ERRORS */}
           <span>  {errors.name && (<span className="danger">{errors.name}</span>)}</span>
           <br/>
           <span>  {errors.hp && (<span className="danger">{errors.hp}</span>)}</span>

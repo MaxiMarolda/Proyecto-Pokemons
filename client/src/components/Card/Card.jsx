@@ -7,9 +7,6 @@ export default function Card({id, name, hp, img, type}) {
  
   return (
     <div className="PokeCard">
-      {//console.log(type.length)
-      }{//console.log(currentPage)
-      }
       <Link className="PokeLink" to={`/details/${id}`}>
         <h4>{name.toUpperCase()}</h4>
       </Link>

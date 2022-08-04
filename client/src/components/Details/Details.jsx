@@ -2,12 +2,11 @@ import React from "react";
 import { useSelector, useDispatch} from "react-redux";
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { getPokemonsById , clearPage, deletePokemon, refresh} from "../actions";
+import { getPokemonsById , clearPage, deletePokemon, refresh, getPokemons} from "../../actions";
 import { Link } from 'react-router-dom';
 import './Details.css';
 
 export default function PokemonDetails(){
-  //const [data, setData] = React.useState();
   const {id} = useParams();
   const dispatch = useDispatch();
   const pokeDetail = useSelector (state => state.pokemonDetail);
@@ -28,7 +27,9 @@ export default function PokemonDetails(){
         r.data ? alert(r.data) 
           : alert(r.response.data)
       });
-      setDestroyed(true);    
+      setDestroyed(true);
+      dispatch(refresh())
+      dispatch(getPokemons())
   };
  
  //console.log(pokeDetail);
@@ -51,9 +52,14 @@ export default function PokemonDetails(){
                     ? pokeDetail.type[0]
                     :(pokeDetail.type[0] + " - " + pokeDetail.type[1])}
                 </h5>
-                <>{pokeDetail.created  && !destroyed ? 
-        <button className="DestroyButton" onClick={e=> {handleOnClick(id)}}>Destroy</button>
-        : <br/> }</>
+                <div className="">
+                  {pokeDetail.created  && !destroyed ? 
+                      <button className="DestroyButton" onClick={e=> {handleOnClick(id)}}>Destroy</button>
+                      : pokeDetail.created  && destroyed ?
+                      <h3 className="DestroyMessage">Pokemon Destroyed</h3>
+                      :<br/> 
+                  }
+                </div>
                 <img src={pokeDetail.img} alt={pokeDetail.name} />
               </div>
               <br/>
