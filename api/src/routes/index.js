@@ -110,35 +110,35 @@ router.get ('/pokemons', async (req, res) => {
   
 });
 
-router.get ('/db', async (req, res) => {
-  let { name } = req.query;
- // console.log(`Console de nombre: ${name}`);
-  if (!name) {
-    //console.log("entre al if");
-    try {
-      let pokemonsTotal = await getDbInfo();
-      return res.send(pokemonsTotal)
-    } catch (error) {
-      console.log(error)
-      return res.status(400).send("Error in the query");
-    }
-  } else {
-    name = name.toLowerCase();
-    try {
-      let pokemonName = await cache.filter( e => e.name === name);
-      return pokemonName.length ?
-            res.json(pokemonName) :
-            res.status(404).send("The Pokemon does not exists")    
-    } catch (error) {
-      console.log(error);
-      return res.status(400).send("Error in the query");
-    }
+// router.get ('/db', async (req, res) => {
+//   let { name } = req.query;
+//  // console.log(`Console de nombre: ${name}`);
+//   if (!name) {
+//     //console.log("entre al if");
+//     try {
+//       let pokemonsTotal = await getDbInfo();
+//       return res.send(pokemonsTotal)
+//     } catch (error) {
+//       console.log(error)
+//       return res.status(400).send("Error in the query");
+//     }
+//   } else {
+//     name = name.toLowerCase();
+//     try {
+//       let pokemonName = await cache.filter( e => e.name === name);
+//       return pokemonName.length ?
+//             res.json(pokemonName) :
+//             res.status(404).send("The Pokemon does not exists")    
+//     } catch (error) {
+//       console.log(error);
+//       return res.status(400).send("Error in the query");
+//     }
     
 
-  }
-});
+//   }
+// });
 
-router.get ('/pokemons/:ID', async (req, res) => {
+router.get ('/pokemon/:ID', async (req, res) => {
   const { ID } = req.params;
   const getPokemon = async () => {
     if(ID.length < 4){
@@ -170,7 +170,7 @@ router.get ('/pokemons/:ID', async (req, res) => {
         pokes = pokes.dataValues;
         pokes.type = pokes.types.map((e) => e.name)
         delete pokes.types;
-      console.log(pokes.type)
+     // console.log(pokes.type)
       return pokes;
     } 
   }

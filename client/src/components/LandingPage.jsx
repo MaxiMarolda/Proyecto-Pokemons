@@ -8,7 +8,7 @@ import { getTypes } from "../actions";
 export default function LandingPage(){
   const dispatch = useDispatch();
 
-  useEffect (() => {
+  useEffect (() => {        // ON MOUNT
     dispatch(getTypes());
 
   },[dispatch]);

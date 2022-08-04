@@ -10,14 +10,14 @@ import SearchBar from "../SearchBar/SearchBar";
 
 
 export default function Home (){
-
+  //GLOBAL STATE CONSTANTS
   const dispatch = useDispatch();
   const dispPokemons = useSelector ((state) => state.pokemons);
   const allPokemons = useSelector ((state) => state.allPokemons);
   const types = useSelector((state) => state.types);
+  //LOCAL CONSTANTS
+  const pokemonsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line
-  const [pokemonsPerPage, setPokemonsPerPage] = useState(12);
   const [render, setRender] = useState('');
   const indexOfLastPokemon = currentPage * pokemonsPerPage;
   const indexOfFirstPokemon = indexOfLastPokemon - pokemonsPerPage;
@@ -32,18 +32,18 @@ export default function Home (){
     dispatch(getPokemons());
   },[dispatch]);
 
-  function handleSelectType (e) {
+  function handleSelectType (e) {             // HERE IS THE SELECTOR BY TYPE OF POKEMON
     e.preventDefault();
     dispatch(filterPokemonsByType(e.target.value));
     setCurrentPage(1);
   };
-  function handleSelectOrigin (e) {
+  function handleSelectOrigin (e) {             // HERE IS THE SELECTOR BY ORIGIN OF POKEMON CREATED OR EXISTENT
     e.preventDefault();
     dispatch(filterPokemonsByOrigin(e.target.value));
     setCurrentPage(1);
   };
   
-  function handleSortOrder (e) {
+  function handleSortOrder (e) {             // HERE ARE THE SORT METHODS 
     e.preventDefault();
     dispatch(sortPokemonsByOrder(e.target.value));
     setCurrentPage(1);
@@ -51,12 +51,17 @@ export default function Home (){
     console.log(render);
   }
 
-  return (
+  return (             // HERE IS THE HOME PAGE OF THE APP
     <div className="Home">
       <h1>Come On Pokemons</h1>
-      <SearchBar setCurrentPage={setCurrentPage}/>
+      <SearchBar setCurrentPage={setCurrentPage}/>          {/*SEARCHBAR */}
       <div className="Selects">
-        <select onChange={e => handleSelectType(e)}>
+        <select onChange={e => handleSelectOrigin(e)}>       {/*ORIGIN SELECTOR */}
+          <option value= 'all'>--Select created (All)--</option>
+          <option value= 'exis'>Existent</option>
+          <option value= 'created'>Created</option>
+        </select>
+        <select onChange={e => handleSelectType(e)}>        {/*TYPE SELECTOR */}
           <option value='all'>--Select type (All)--</option>
           {types.map((t) => {
             return(
@@ -64,12 +69,7 @@ export default function Home (){
               )}
             )}
         </select>
-        <select onChange={e => handleSelectOrigin(e)}>
-          <option value= 'all'>--Select created (All)--</option>
-          <option value= 'exis'>Existent</option>
-          <option value= 'created'>Created</option>
-        </select>
-        <select onChange={e => handleSortOrder(e)}>
+        <select onChange={e => handleSortOrder(e)}>          {/*SORT SELECTOR */}
           <option value= 'id'>--Select order (Id)--</option>
           <option value= 'asc'>Ascendent</option>
           <option value= 'dsc'>Descendent</option>
@@ -77,13 +77,13 @@ export default function Home (){
         </select>
       </div>
       <br/>
-        <Paginado
+        <Paginado 
         pokemonsPerPage = {pokemonsPerPage}
         dispPokemons = {dispPokemons.length}
         paginado = {paginado}
         currentPage = {currentPage}
-        />
-      <div className="Pokemons">
+        />                                                        {/*PAGINATION */}
+      <div className="Pokemons">                                  {/*POKEMON CARDS */}
           {allPokemons.length ?
             (currentPokemons.length ?
             currentPokemons.map(poke => 

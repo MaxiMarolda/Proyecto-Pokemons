@@ -15,14 +15,13 @@ const Paginado = ({pokemonsPerPage, dispPokemons, paginado, currentPage}) =>{
   
   return(
     <nav className="Paginado">
-       <button onClick={(e) => handleOnClick(e)} name="less" >{"<<"}</button>
-        {/* {console.log(`total de páginas ${pageTotal}`)} */}
+       <button onClick={(e) => handleOnClick(e)} name="less" >{"<"}</button>
         { pageNumbers && pageNumbers.map(n => (
           <span className="Number" key={n}>
             <button onClick={() => paginado(n)}>{n}</button>
           </span>
         ))}
-      <button onClick={(e) => handleOnClick(e)} name="more" >{">>"}</button>
+      <button onClick={(e) => handleOnClick(e)} name="more" >{">"}</button>
     </nav>
   )
 }

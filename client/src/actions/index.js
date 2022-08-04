@@ -1,4 +1,5 @@
-import {GLOBAL_REFRESH, GET_POKEMONS_BY_NAME ,FILTER_BY_ORIGIN, FILTER_BY_TYPE, GET_POKEMONS, GET_TYPES, SORT_BY_ORDER, GET_POKEMONS_BY_ID, CLEAR_PAGE } from './actionTypes'
+import {GLOBAL_REFRESH, GET_POKEMONS_BY_NAME ,FILTER_BY_ORIGIN, FILTER_BY_TYPE,
+   GET_POKEMONS, GET_TYPES, SORT_BY_ORDER, GET_POKEMONS_BY_ID, CLEAR_PAGE } from './actionTypes'
 import axios from "axios";
 
 
@@ -38,9 +39,9 @@ export function getPokemonsByName(name){
   }
 };
 
-export function getPokemonsById(id){
+export function getPokemonById(id){
   return async function(dispatch){
-    var json = await axios.get(`http://localhost:3001/pokemons/${id}`,{
+    var json = await axios.get(`http://localhost:3001/pokemon/${id}`,{
       
     });
     return dispatch({

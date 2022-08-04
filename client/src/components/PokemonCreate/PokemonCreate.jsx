@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from 'react-router-dom';
-import { postPokemon, getTypes, refresh, getPokemons } from "../../actions";
+import { postPokemon, refresh, getPokemons } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import './PokemonCreate.css'
 
@@ -43,7 +43,7 @@ export default function PokemonCreate() {
   const dispatch = useDispatch();
   const types = useSelector((state) => state.types);
   const allPokemons = useSelector((state) => state.allPokemons);
-  const picId = allPokemons.length + 800;
+  const picId = allPokemons.length + 700;
   const picURL = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${picId}.png`;
   const initialPokemonState = {
     name: "",
@@ -58,10 +58,6 @@ export default function PokemonCreate() {
   };
   const [data, setData] = useState(initialPokemonState);
   const [errors, setErrors] = useState({})
-  
-  useEffect(() => {              //  INITIAL HOOK //
-    dispatch(getTypes())
-  }, [dispatch]);
 
   function handleChange(e) {    //FORM VALIDATION/REGISTRATION
     setData({
@@ -219,7 +215,6 @@ export default function PokemonCreate() {
           <br/>
         </div>
       </div>
-      
         <br />
         <br/>
       <Link to='/home'>
