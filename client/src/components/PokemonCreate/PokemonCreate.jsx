@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { postPokemon, refresh, getPokemons } from "../../actions";
+import { postPokemon, refresh, getPokemons, getTypes } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import './PokemonCreate.css'
 
@@ -59,6 +59,11 @@ export default function PokemonCreate() {
   const [data, setData] = useState(initialPokemonState);
   const [errors, setErrors] = useState({})
 
+  useEffect (() => {        // ON MOUNT
+    dispatch(getTypes());
+  
+  },[dispatch]);
+
   function handleChange(e) {    //FORM VALIDATION/REGISTRATION
     setData({
       ...data,
@@ -72,10 +77,14 @@ export default function PokemonCreate() {
 
   function handleType(e) {        //TYPE SELECTION 
     e.preventDefault();
-        setData({
+   if(!data.type.includes(e.target.value)){
+    setData({
               ...data,
               type: [...data.type, e.target.value]
             })
+    } else {
+      alert ("el type ya existe")
+    }
   };
 
   function handleDelete(e) {    //TYPE CORRECTION OPTION
@@ -115,7 +124,7 @@ export default function PokemonCreate() {
             name="name" 
             onChange={e => handleChange(e)} 
             value={data.name}
-            required />
+             />
            <br />
           <label>Attack:     </label>
           <input className={errors.hp && "danger"}
@@ -123,7 +132,7 @@ export default function PokemonCreate() {
             name="hp" 
             onChange={e => handleChange(e)} 
             value={data.hp} 
-            required />
+             />
           <br />
           <label >Stregth:   </label>
           <input className={errors.strength && "danger"}
@@ -131,7 +140,7 @@ export default function PokemonCreate() {
             name="strength" 
             onChange={e => handleChange(e)} 
             value={data.strength} 
-            required /> 
+             /> 
           <br />
           <label >Defense:    </label>
           <input className={errors.defense && "danger"}
@@ -139,7 +148,7 @@ export default function PokemonCreate() {
             name="defense" 
             onChange={e => handleChange(e)} 
             value={data.defense} 
-            required /> 
+             /> 
           <br />
           <label >Speed:   </label>
           <input className={errors.speed && "danger"}
@@ -147,7 +156,7 @@ export default function PokemonCreate() {
             name="speed" 
             onChange={e => handleChange(e)} 
             value={data.speed} 
-            required /> 
+             /> 
           <br />
           <label >Height:  </label>
           <input className={errors.height && "danger"}
@@ -155,7 +164,7 @@ export default function PokemonCreate() {
             name="height" 
             onChange={e => handleChange(e)}
             value={data.height} 
-            required />
+             />
           <br />
           <label >Weight:  </label>
           <input className={errors.weight && "danger"}
@@ -163,7 +172,7 @@ export default function PokemonCreate() {
             name="weight" 
             onChange={e => handleChange(e)} 
             value={data.weight} 
-            required />
+             />
           <br />
           <label >Image:  </label>
           <input className={errors.img && "danger"}

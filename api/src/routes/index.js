@@ -110,33 +110,6 @@ router.get ('/pokemons', async (req, res) => {
   
 });
 
-// router.get ('/db', async (req, res) => {
-//   let { name } = req.query;
-//  // console.log(`Console de nombre: ${name}`);
-//   if (!name) {
-//     //console.log("entre al if");
-//     try {
-//       let pokemonsTotal = await getDbInfo();
-//       return res.send(pokemonsTotal)
-//     } catch (error) {
-//       console.log(error)
-//       return res.status(400).send("Error in the query");
-//     }
-//   } else {
-//     name = name.toLowerCase();
-//     try {
-//       let pokemonName = await cache.filter( e => e.name === name);
-//       return pokemonName.length ?
-//             res.json(pokemonName) :
-//             res.status(404).send("The Pokemon does not exists")    
-//     } catch (error) {
-//       console.log(error);
-//       return res.status(400).send("Error in the query");
-//     }
-    
-
-//   }
-// });
 
 router.get ('/pokemon/:ID', async (req, res) => {
   const { ID } = req.params;
@@ -262,6 +235,32 @@ router.delete ('/pokemon/:ID', async (req, res) => {
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
+
+// router.get ('/db', async (req, res) => {
+//   let { name } = req.query;
+//  // console.log(`Console de nombre: ${name}`);
+//   if (!name) {
+//     //console.log("entre al if");
+//     try {
+//       let pokemonsTotal = await getDbInfo();
+//       return res.send(pokemonsTotal)
+//     } catch (error) {
+//       console.log(error)
+//       return res.status(400).send("Error in the query");
+//     }
+//   } else {
+//     name = name.toLowerCase();
+//     try {
+//       let pokemonName = await cache.filter( e => e.name === name);
+//       return pokemonName.length ?
+//             res.json(pokemonName) :
+//             res.status(404).send("The Pokemon does not exists")    
+//     } catch (error) {
+//       console.log(error);
+//       return res.status(400).send("Error in the query");
+//     }
+//   }
+// });
 
 
 module.exports = router;

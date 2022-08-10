@@ -10,18 +10,6 @@ module.exports = (sequelize) => {
         allowNull: false,
         primaryKey: true
       },
-      // id: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      //   autoIncrement: true,
-      // get() {
-      //   const idCreated = this.getDataValue('id') + 1000;
-      //   return idCreated}
-      // },
-      // apiId: {type: DataTypes.INTEGER,
-      //   primaryKey: true,
-
-      // },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
